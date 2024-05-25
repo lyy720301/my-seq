@@ -1,0 +1,34 @@
+
+server:
+  port: 9999
+datasource:
+  one:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.13.134:3306/seq?verifyServerCertificate=false&useSSL=true
+    username: root
+    password: 123456
+    testOnBorrow: true
+    validationQuery: select 1
+    maxActive: 300
+    maxIdle: 200
+    removeAbandoned: false
+  two:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.13.134:3307/seq?verifyServerCertificate=false&useSSL=true
+    username: root
+    password: 123456
+    testOnBorrow: true
+    validationQuery: select 1
+    maxActive: 300
+    maxIdle: 200
+    removeAbandoned: false
+
+
+#curator配置
+curator:
+  connectString: 192.168.13.134:2181 # zookeeper 地址
+  path: seq
+  retryCount: 3 # 重试次数
+  elapsedTimeMs: 2000 # 重试间隔时间
+  sessionTimeoutMs: 60000 # session超时时间
+  connectionTimeoutMs: 10000 # 连接超时时间
