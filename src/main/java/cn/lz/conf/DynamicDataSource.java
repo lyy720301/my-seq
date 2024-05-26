@@ -14,7 +14,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     @Override
     protected Object determineCurrentLookupKey() {
         String dateSourceType = DynamicDataSourceContextHolder.getDateSourceNo();
-        log.info("选取数据源No: {}", dateSourceType);
+        log.debug("选取数据源No: {}", dateSourceType);
         return dateSourceType;
     }
 

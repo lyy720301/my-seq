@@ -8,13 +8,13 @@ public class DynamicDataSourceContextHolder {
     public static ThreadLocal<String> DATASOURCE_CONTEXT_HOLDER = new ThreadLocal<>();
 
     public static void setDateSourceNo(String dataSourceNo) {
-        log.info("设置数据源 = {}", dataSourceNo);
+        log.debug("设置数据源 = {}", dataSourceNo);
         DATASOURCE_CONTEXT_HOLDER.set(dataSourceNo);
     }
 
     public static String getDateSourceNo() {
         String dataSourceNo = DATASOURCE_CONTEXT_HOLDER.get();
-        log.info("获得数据源 = {}", dataSourceNo);
+        log.debug("获得数据源 = {}", dataSourceNo);
         return dataSourceNo;
     }
 

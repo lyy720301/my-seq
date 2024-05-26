@@ -17,7 +17,7 @@ import java.util.Map;
 @Configuration
 public class DBSourceConfig {
 
-    @Primary
+
     @Bean(name = "edenDataSource")
     @ConfigurationProperties("datasource.one")
     public DataSource dataSourceOne() {
@@ -30,6 +30,10 @@ public class DBSourceConfig {
         return new DruidDataSource();
     }
 
+    /**
+     * 用Primary标记来让jdbcTemplate依赖
+     */
+    @Primary
     @Bean
     public DynamicDataSource dynamicDataSource(@Qualifier("edenDataSource") DataSource dataSourceOne,
                                                @Qualifier("oddDataSource") DataSource dataSourceTwo) {

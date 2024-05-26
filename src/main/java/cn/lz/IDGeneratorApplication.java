@@ -13,6 +13,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 public class IDGeneratorApplication {
     public static void main(String[] args) {
+        log.error("test logger error \n");
         ConfigurableApplicationContext applicationContext = SpringApplication.run(IDGeneratorApplication.class);
         log.info("启动成功!");
     }
