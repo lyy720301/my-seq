@@ -2,16 +2,14 @@ package cn.lz.zk;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.CuratorWatcher;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
-import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.zookeeper.WatchedEvent;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.zookeeper.CreateMode;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,10 +20,16 @@ public class ZNodeWatcherService {
 
     private final CuratorFramework curatorFramework;
 
+    private String curStrategy;
+
     private Map<String, String> tokenTableMap;
+
+    private static final String strategyPath = "/strategy";
+    private static final String tokenPath = "/token";
 
     /**
      * 启动时同步zk上的数据
+     *
      * @param curatorFramework
      */
     public ZNodeWatcherService(CuratorFramework curatorFramework) {
@@ -33,9 +37,17 @@ public class ZNodeWatcherService {
         Properties properties = new Properties();
         try {
             // todo 不应耦合
-            byte[] nodeData = curatorFramework.getData().forPath("/token");
-            properties.load(new ByteArrayInputStream(nodeData));
-            tokenTableMap = new ConcurrentHashMap<>((Map)properties);
+            byte[] tokenNodeData = curatorFramework.getData().forPath(tokenPath);
+            properties.load(new ByteArrayInputStream(tokenNodeData));
+            tokenTableMap = new ConcurrentHashMap<>((Map) properties);
+
+            byte[] strategyNodeData = curatorFramework.getData().forPath(strategyPath);
+            if (strategyNodeData == null) {
+                // 默认策略为random
+                curatorFramework.create().withMode(CreateMode.PERSISTENT).forPath(strategyPath, "random".getBytes(StandardCharsets.UTF_8));
+            } else {
+                curStrategy = new String(strategyNodeData, StandardCharsets.UTF_8);
+            }
 
         } catch (IOException e) {
             log.error("watcher load properties error", e);
@@ -54,12 +66,12 @@ public class ZNodeWatcherService {
 
     public void registerZNodeWatcher(String zNodePath) {
         try {
-             CuratorCache cache = CuratorCache.build(curatorFramework, zNodePath);
+            CuratorCache cache = CuratorCache.build(curatorFramework, zNodePath);
             CuratorCacheListener listener = CuratorCacheListener.builder().forChanges((oldNode, node) -> {
                 Properties properties = new Properties();
                 try {
                     properties.load(new ByteArrayInputStream(node.getData()));
-                    tokenTableMap = new ConcurrentHashMap<>((Map)properties);
+                    tokenTableMap = new ConcurrentHashMap<>((Map) properties);
                 } catch (IOException e) {
                     log.error("watcher load properties error", e);
                     throw new RuntimeException(e);

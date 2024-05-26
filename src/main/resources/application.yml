@@ -30,5 +30,5 @@ curator:
   path: seq
   retryCount: 3 # 重试次数
   elapsedTimeMs: 2000 # 重试间隔时间
-  sessionTimeoutMs: 60000 # session超时时间
-  connectionTimeoutMs: 10000 # 连接超时时间
+  sessionTimeoutMs: 120000 # session超时时间
+  connectionTimeoutMs: 15000 # 连接超时时间
