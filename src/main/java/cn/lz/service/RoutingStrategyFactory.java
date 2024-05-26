@@ -13,7 +13,6 @@ import java.util.Map;
 public class RoutingStrategyFactory {
 
     private final Map<String, RoutingStrategy> routingStrategyMap = new HashMap<>();
-    ;
 
     @Autowired
     private RandomRoutingStrategy randomRoutingStrategy;
