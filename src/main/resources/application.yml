@@ -9,8 +9,8 @@ datasource:
     password: 123456
     testOnBorrow: true
     validationQuery: select 1
-    maxActive: 300
-    maxIdle: 200
+    maxActive: 100
+
     removeAbandoned: false
   two:
     driver-class-name: com.mysql.jdbc.Driver
@@ -19,8 +19,7 @@ datasource:
     password: 123456
     testOnBorrow: true
     validationQuery: select 1
-    maxActive: 300
-    maxIdle: 200
+    maxActive: 100
     removeAbandoned: false
 
 
