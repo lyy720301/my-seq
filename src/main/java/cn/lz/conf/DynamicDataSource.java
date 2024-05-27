@@ -1,14 +1,27 @@
 package cn.lz.conf;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class DynamicDataSource extends AbstractRoutingDataSource {
 
-    private List<String> dataSourceKeys;
+    private List<String> allDataSourceKeys;
+
+    /**
+     * 所有存活的节点
+     */
+    @Getter
+    private List<String> allAliveDataSourceKeys;
+
+    @Getter
+    private Map<String, Long> faultDataSourceMap = new ConcurrentHashMap<>();
 
 
     @Override
@@ -18,12 +31,13 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         return dateSourceType;
     }
 
-    public List<String> getDataSourceKeys() {
-        return dataSourceKeys;
+    public void setAllAliveDataSourceKeys(List<String> allAliveDataSourceKeys) {
+        this.allAliveDataSourceKeys = allAliveDataSourceKeys;
+        this.allDataSourceKeys = new ArrayList<>(allAliveDataSourceKeys);
     }
 
-    public void setDataSourceKeys(List<String> dataSourceKeys) {
-        this.dataSourceKeys = dataSourceKeys;
+    public void setFaultDataSourceMap(Map<String, Long> faultDataSourceMap) {
+        this.faultDataSourceMap = faultDataSourceMap;
     }
 
 

@@ -68,7 +68,7 @@ public class DBSourceConfig {
         map.put("2", dataSourceTwo);
         dynamicDataSource.setTargetDataSources((Map) map);
         dynamicDataSource.setDefaultTargetDataSource(dataSourceOne);
-        dynamicDataSource.setDataSourceKeys(new ArrayList<>(Arrays.asList("1", "2")));
+        dynamicDataSource.setAllAliveDataSourceKeys(new ArrayList<>(Arrays.asList("1", "2")));
 
         return dynamicDataSource;
 
