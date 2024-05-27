@@ -37,7 +37,7 @@ public class DataSourceFailoverAspect {
         RoutingStrategy routingStrategy = routingStrategyFactory.getReceiptHandleStrategy("random");
         // 根据当前策略选择数据库
         var dataSourceNo = routingStrategy.selectDb();
-        log.info("当前策略选定的数据源No: {}", dataSourceNo);
+        log.debug("当前策略选定的数据源No: {}", dataSourceNo);
         try {
             return joinPoint.proceed();
         } catch (Throwable e) {

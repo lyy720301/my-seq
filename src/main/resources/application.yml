@@ -11,12 +11,16 @@ datasource:
       username: root
       password: 123456
       connectionTimeout: 1000
+      minIdle: 20
+      maxPoolSize: 20
 
     two:
       jdbcUrl: jdbc:mysql://192.168.13.134:3307/seq?verifyServerCertificate=false&useSSL=true
       username: root
       password: 123456
       connectionTimeout: 1000
+      minIdle: 20
+      maxPoolSize: 20
 
   druid:
     one:
