@@ -1,7 +1,9 @@
 package cn.lz.conf;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,17 +19,40 @@ import java.util.Map;
 @Configuration
 public class DBSourceConfig {
 
+    /*
+    druid
+     */
 
+    @ConditionalOnProperty(name = "datasource.useHikari", havingValue = "false")
     @Bean(name = "edenDataSource")
-    @ConfigurationProperties("datasource.one")
+    @ConfigurationProperties("datasource.druid.one")
     public DataSource dataSourceOne() {
         return new DruidDataSource();
     }
 
+    @ConditionalOnProperty(name = "datasource.useHikari", havingValue = "false")
     @Bean(name = "oddDataSource")
-    @ConfigurationProperties("datasource.two")
+    @ConfigurationProperties("datasource.druid.two")
     public DataSource dataSourceTwo() {
         return new DruidDataSource();
+    }
+
+    /*
+    hikari
+     */
+
+    @ConditionalOnProperty(name = "datasource.useHikari", havingValue = "true")
+    @Bean(name = "oddDataSource")
+    @ConfigurationProperties("datasource.hikari.one")
+    public DataSource hikariDataSourceOne() {
+        return new HikariDataSource();
+    }
+
+    @ConditionalOnProperty(name = "datasource.useHikari", havingValue = "true")
+    @Bean(name = "edenDataSource")
+    @ConfigurationProperties("datasource.hikari.two")
+    public DataSource hikariDataSourceTwo() {
+        return new HikariDataSource();
     }
 
     /**
@@ -48,4 +73,5 @@ public class DBSourceConfig {
         return dynamicDataSource;
 
     }
+
 }

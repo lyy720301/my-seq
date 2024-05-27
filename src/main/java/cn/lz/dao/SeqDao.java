@@ -52,6 +52,9 @@ public class SeqDao {
             }, keyHolder);
             var res = keyHolder.getKeyList().get(0).get("GENERATED_KEY");
             return (Long) res;
+        } catch (Exception e) {
+            log.error("从数据库获取id失败 ", e);
+            throw e;
         } finally {
             // threadLocal 中的数据不用后要即时清理
             DynamicDataSourceContextHolder.clearDateSourceNos();

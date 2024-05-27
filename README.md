@@ -1,3 +1,6 @@
+    通过 datasource.useHikari 配置选择特定的数据库连接池
+    值为true时使用hikari，值为false时使用druid
+
 已完成的
 
 - 实现了不同业务之间id隔离

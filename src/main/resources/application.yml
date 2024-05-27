@@ -1,26 +1,45 @@
 
 server:
   port: 9999
-datasource:
-  one:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.13.134:3306/seq?verifyServerCertificate=false&useSSL=true
-    username: root
-    password: 123456
-    testOnBorrow: true
-    validationQuery: select 1
-    maxActive: 100
 
-    removeAbandoned: false
-  two:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.13.134:3307/seq?verifyServerCertificate=false&useSSL=true
-    username: root
-    password: 123456
-    testOnBorrow: true
-    validationQuery: select 1
-    maxActive: 100
-    removeAbandoned: false
+datasource:
+  # 控制使用哪种数据库连接池
+  useHikari: true
+  hikari:
+    one:
+      jdbcUrl: jdbc:mysql://192.168.13.134:3306/seq?verifyServerCertificate=false&useSSL=true
+      username: root
+      password: 123456
+      connectionTimeout: 1000
+
+    two:
+      jdbcUrl: jdbc:mysql://192.168.13.134:3307/seq?verifyServerCertificate=false&useSSL=true
+      username: root
+      password: 123456
+      connectionTimeout: 1000
+
+  druid:
+    one:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://192.168.13.134:3306/seq?verifyServerCertificate=false&useSSL=true
+      username: root
+      password: 123456
+      testOnBorrow: true
+      validationQuery: select 1
+      maxActive: 100
+      maxWait: 3000
+
+      removeAbandoned: false
+    two:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://192.168.13.134:3307/seq?verifyServerCertificate=false&useSSL=true
+      username: root
+      password: 123456
+      testOnBorrow: true
+      validationQuery: select 1
+      maxActive: 100
+      removeAbandoned: false
+      maxWait: 3000
 
 
 #curator配置
