@@ -29,15 +29,43 @@
 
 **程序配置**
 
+*MySQL配置*
+
+my.cnf
+
+`a库所在实例`
+
+```text
+auto_increment_offset=1
+auto_increment_increment=3
+```
+
+`b库所在实例`
+
+```text
+auto_increment_offset=2
+auto_increment_increment=3
+```
+
+`c库所在实例`
+
+```text
+auto_increment_offset=3
+auto_increment_increment=3
+```
+
 *yml文件配置*
 
-    通过 datasource.useHikari 配置选择特定的数据库连接池
-    值为true时使用hikari，值为false时使用druid
+```yaml
+datasource:
+  # 控制使用哪种数据库连接池，值为true时使用hikari，值为false时使用druid
+  useHikari: true
+```
 
 *zk配置*
 
-| 路径            | 值                                    | 解释                           |
-|---------------|--------------------------------------|:-----------------------------|
-| /seq/token    | video=video_seq <br/>myshop=shop_seq | key为token，用于鉴权。value为表名，用于取值 |
-| /seq/strategy | random                               | 负载均衡策略，当前仅支持random，即随机路由     |
+| 路径            | 值                                    | 解释                             |
+|---------------|--------------------------------------|:-------------------------------|
+| /seq/token    | video=video_seq <br/>myshop=shop_seq | key为token，用于鉴权。value为表名，用于取值   |
+| /seq/strategy | random                               | 用于实时调整负载均衡策略，目前仅支持random，即随机路由 |
 
