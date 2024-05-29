@@ -28,7 +28,7 @@ public class DataSourceFailoverAspect {
      * 选择路由的数据库
      */
     @Around("dataAccessOperation()")
-    public Object afterThrowingDataAccessOperationException(ProceedingJoinPoint joinPoint) {
+    public Object afterThrowingDataAccessOperationException(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
@@ -49,15 +49,15 @@ public class DataSourceFailoverAspect {
                 try {
                     // 重新选择选择数据库
                     var dataSourceNo2 = routingStrategy.selectDb();
-                    log.info("当前数据源故障，尝试进行转移 -> {}", dataSourceNo2);
+                    log.info("当前数据源No: {} 故障，尝试进行转移 -> {}", dataSourceNo, dataSourceNo2);
                     return joinPoint.proceed();
                 } catch (Throwable ex) {
                     log.info("指定切点失败，不再进行转移");
                     throw new RuntimeException(ex);
                 }
             } else {
-                log.error("获取id失败");
-                throw new RuntimeException();
+                log.error("获取id失败, 数据源No: {}", dataSourceNo, e);
+                throw e;
             }
         } finally {
             long elapsedTime = System.currentTimeMillis() - start;

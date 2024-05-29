@@ -90,7 +90,7 @@ public class ZNodeWatcherService {
             cache.start();
             log.info("Registration is successful");
         } catch (Exception e) {
-            log.error("register watch error");
+            log.error("register watch error", e);
         }
     }
 }
