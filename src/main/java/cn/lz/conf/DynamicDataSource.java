@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -26,9 +24,35 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 
     @Override
     protected Object determineCurrentLookupKey() {
+        handleFaultDataSource();
         String dateSourceType = DynamicDataSourceContextHolder.getDateSourceNo();
         log.debug("选取数据源No: {}", dateSourceType);
         return dateSourceType;
+    }
+
+    /**
+     * 剔除/恢复故障数据源
+     */
+    public void handleFaultDataSource() {
+        Set<Map.Entry<String, Long>> entries = faultDataSourceMap.entrySet();
+        Iterator<Map.Entry<String, Long>> iterator = entries.iterator();
+        List faultList = new ArrayList();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Long> next = iterator.next();
+            if (System.currentTimeMillis() - next.getValue() > 10000) {
+                faultDataSourceMap.remove(next.getKey());
+                synchronized (allAliveDataSourceKeys) {
+                    if (!allAliveDataSourceKeys.contains(next.getKey())) {
+                        allAliveDataSourceKeys.add(next.getKey());
+                    }
+                }
+            } else {
+                faultList.add(next.getKey());
+            }
+        }
+        if (!faultList.isEmpty()) {
+            allAliveDataSourceKeys.removeAll(faultList);
+        }
     }
 
     public void setAllAliveDataSourceKeys(List<String> allAliveDataSourceKeys) {

@@ -45,6 +45,7 @@ public class DataSourceFailoverAspect {
             if (e instanceof CannotGetJdbcConnectionException) {
                 // 描黑当前数据源
                 dynamicDataSource.getFaultDataSourceMap().put(DynamicDataSourceContextHolder.getDateSourceNo(), System.currentTimeMillis());
+                dynamicDataSource.handleFaultDataSource();
                 DynamicDataSourceContextHolder.clearDateSourceNos();
                 try {
                     // 重新选择选择数据库
