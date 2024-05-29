@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Configuration
@@ -68,7 +68,7 @@ public class DBSourceConfig {
         map.put("2", dataSourceTwo);
         dynamicDataSource.setTargetDataSources((Map) map);
         dynamicDataSource.setDefaultTargetDataSource(dataSourceOne);
-        dynamicDataSource.setAllAliveDataSourceKeys(new ArrayList<>(Arrays.asList("1", "2")));
+        dynamicDataSource.setAllAliveDataSourceKeys(new CopyOnWriteArrayList<>(Arrays.asList("1", "2")));
 
         return dynamicDataSource;
 

@@ -16,6 +16,7 @@ public class SeqService {
 
     public long getSeq(String token) {
         String tableName = zNodeWatcherService.getTableNameByToken(token);
+        // todo 应定义异常
         if (tableName == null) {
             return -1;
         }
