@@ -1,5 +1,6 @@
 package cn.lz.conf;
 
+import cn.lz.dao.DynamicSwitch;
 import cn.lz.service.RoutingStrategy;
 import cn.lz.service.RoutingStrategyFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +28,8 @@ public class DataSourceFailoverAspect {
     /**
      * 选择路由的数据库
      */
-    @Around("dataAccessOperation()")
-    public Object afterThrowingDataAccessOperationException(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("@annotation(dynamicSwitch)")
+    public Object afterThrowingDataAccessOperationException(ProceedingJoinPoint joinPoint, DynamicSwitch dynamicSwitch) throws Throwable {
         long start = System.currentTimeMillis();
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();

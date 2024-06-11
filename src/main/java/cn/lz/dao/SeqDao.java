@@ -23,6 +23,7 @@ public class SeqDao {
     @Resource
     private JdbcTemplate jdbcTemplate;
 
+    @DynamicSwitch() // 使用注解进行增强
     public long getSeq(String tableName) {
         try {
             // todo 对接zk
