@@ -1,4 +1,7 @@
 # 分布式唯一序列系统
+
+基于数据库主键自增
+
 **已完成的**
 
 - 实现了不同业务之间id隔离
@@ -16,7 +19,7 @@
 - 批量id功能
 - 提供其他负载均衡策略
 
-**生成原理**
+## 生成原理
 
 使用`replace into`语句插入数据时，如果唯一索引列有重复的话会删除重复的数据然后插入新的数据，新的主键id就可以作为生成的序列值。
 
@@ -47,26 +50,22 @@ my.cnf
 
 ```text
 auto_increment_offset=1
-auto_increment_increment=3
+auto_increment_increment=2
 ```
 
 `b库所在实例`
 
 ```text
 auto_increment_offset=2
-auto_increment_increment=3
-```
-
-`c库所在实例`
-
-```text
-auto_increment_offset=3
-auto_increment_increment=3
+auto_increment_increment=2
 ```
 
 #### yml文件配置
 
 ##### 数据库连接
+
+backend/src/main/resources/application.yml
+
 ```yaml
 datasource:
   # 控制使用哪种数据库连接池
@@ -163,11 +162,11 @@ connectionTimeoutMs: 15000 # 连接超时时间
 @DubboReference
 private SeqService seqService;
 
-        void call(){
-        String token="myshop";
-        long seq=seqService.seq(token);
-        log.info("seq no : {}",seq);
-        }
+void call(){
+    String token="myshop";
+    long seq=seqService.seq(token);
+    log.info("seq no : {}",seq);
+}
 ```
 
 详见调用示例 [consumer.Task.java](consumer/src/main/java/cn/lz/seq/demo/consumer/Task.java)
