@@ -1,0 +1,70 @@
+
+server:
+  port: 9999
+
+datasource:
+  # 控制使用哪种数据库连接池
+  useHikari: true
+  hikari:
+    one:
+      jdbcUrl: jdbc:mysql://192.168.13.134:3306/seq?verifyServerCertificate=false&useSSL=true
+      username: root
+      password: 123456
+      connectionTimeout: 1000
+      minIdle: 20
+      maxPoolSize: 20
+
+    two:
+      jdbcUrl: jdbc:mysql://192.168.13.134:3307/seq?verifyServerCertificate=false&useSSL=true
+      username: root
+      password: 123456
+      connectionTimeout: 1000
+      minIdle: 20
+      maxPoolSize: 20
+
+  druid:
+    one:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://192.168.13.134:3306/seq?verifyServerCertificate=false&useSSL=true
+      username: root
+      password: 123456
+      testOnBorrow: true
+      validationQuery: select 1
+      maxActive: 100
+      maxWait: 3000
+
+      removeAbandoned: false
+    two:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://192.168.13.134:3307/seq?verifyServerCertificate=false&useSSL=true
+      username: root
+      password: 123456
+      testOnBorrow: true
+      validationQuery: select 1
+      maxActive: 100
+      removeAbandoned: false
+      maxWait: 3000
+
+dubbo:
+  application:
+    name: seq-provider
+    logger: slf4j
+  protocol:
+    name: tri
+    #    http dubbo共用接口
+    port: 11111
+  registry:
+    #    id: zk-registry
+    address: zookeeper://192.168.13.134:2181
+    # This will enable application-level service discovery only (the recommended service discovery method for Dubbo3).
+    # For users upgrading from Dubbo2.x, please set the value to 'all' for smooth migration.
+    register-mode: instance
+
+#curator配置
+curator:
+  connectString: 192.168.13.134:2181 # zookeeper 地址
+  path: seq
+  retryCount: 3 # 重试次数
+  elapsedTimeMs: 2000 # 重试间隔时间
+  sessionTimeoutMs: 120000 # session超时时间
+  connectionTimeoutMs: 15000 # 连接超时时间
