@@ -1,0 +1,11 @@
+dubbo:
+  application:
+    name: seq-provider
+    logger: slf4j
+
+  registry:
+    #    id: zk-registry
+    address: zookeeper://192.168.13.134:2181
+    # This will enable application-level service discovery only (the recommended service discovery method for Dubbo3).
+    # For users upgrading from Dubbo2.x, please set the value to 'all' for smooth migration.
+    register-mode: instance

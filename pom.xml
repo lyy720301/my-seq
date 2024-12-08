@@ -16,6 +16,7 @@
     <modules>
         <module>backend</module>
         <module>interface</module>
+        <module>consumer</module>
     </modules>
 
     <properties>
