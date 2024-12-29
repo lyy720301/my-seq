@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -24,7 +25,7 @@ public class SeqDao {
     private JdbcTemplate jdbcTemplate;
 
     @DynamicSwitch() // 使用注解进行增强
-    public long getSeq(String tableName) {
+    public BigInteger getSeq(String tableName) {
         try {
             // todo 对接zk
             // todo 迁移至service
@@ -39,7 +40,7 @@ public class SeqDao {
                 }
             }, keyHolder);
             var res = keyHolder.getKeyList().get(0).get("GENERATED_KEY");
-            return (Long) res;
+            return (BigInteger) res;
         } catch (Exception e) {
             log.error("从数据库获取id失败 ", e);
             throw e;

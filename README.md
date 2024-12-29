@@ -1,23 +1,6 @@
 # 分布式唯一序列系统
 
-基于数据库主键自增
-
-**已完成的**
-
-- 实现了不同业务之间id隔离
-- 实现了从zk读取token与表名映射关系
-- 提供简单的随机路由均衡策略
-- 适配多数据源
-- 适配多种数据库连接池
-- 基于AOP实现故障转移
-- 通过zk配置负载均衡策略
-- 支持 Http 或 Dubbo 调用
-
-**准备做的**
-
-- 预取功能
-- 批量id功能
-- 提供其他负载均衡策略
+基于数据库主键自增生成趋势递增序列号
 
 ## 生成原理
 
@@ -34,11 +17,88 @@
 
 本项目中使用的是两个库，分别生成偶数号和奇数号
 
-## 运行
+## 项目功能
+**已完成的**
+
+- 实现了不同业务之间id隔离
+- 实现了从zk读取token与表名映射关系
+  -  ZooKeeper初始化信息
+
+| 路径            | 值                                    | 解释                             |
+|---------------|--------------------------------------|:-------------------------------|
+| /seq/token    | video=video_seq <br/>myshop=shop_seq | key为token，用于鉴权。value为表名，用于取值   |
+| /seq/strategy | random                               | 用于实时调整负载均衡策略，目前仅支持random，即随机路由 |
+
+- 提供简单的随机路由均衡策略
+- 适配多数据源
+- 适配多种数据库连接池
+- 基于AOP实现故障转移
+- 通过zk配置负载均衡策略
+- 支持 Http 或 Dubbo 调用
+
+**准备做的**
+
+- 预取功能
+- 批量id功能
+- 提供其他负载均衡策略
+
+## 各模块介绍
+
+- backend  
+  序列生成服务，该服务暴露了dubbo/http接口。
+- consumer  
+  演示服务，定时去请求backend，获取序列号。
+- interface  
+  定义了服务接口，用于rpc发布与调用，同时该服务接口可通过http调用。
+
+## 一、Docker 快速启动
+
+```bash
+docker compose up
+```
+
+### 获取序列号方式
+
+#### 1. Http
+
+`GET http://localhost:11111/seq?token=${token}`
+> token可填video或myshop，即：`http://localhost:11111/seq?token=video` 或 `http://localhost:11111/seq?token=myshop`
+
+#### 2. Dubbo
+
+1. 引入interface
+```xml
+<dependency>
+    <groupId>cn.lz.seq</groupId>
+    <artifactId>interface</artifactId>
+    <version>${project.parent.version}</version>
+</dependency>
+```
+2. 基于Dubbo的rpc调用
+```java
+@DubboReference
+private SeqService seqService;
+
+void call(){
+    String token="video";
+    long seq=seqService.seq(token);
+    log.info("seq no : {}",seq);
+}
+```
+---
+> **注：**
+> 
+> 获取序列请求入口
+> [SeqServiceImpl.java](backend/src/main/java/cn/lz/seq/service/SeqServiceImpl.java)
+
+##### 以上两种方式详细示例请见 [consumer.Task.java](consumer/src/main/java/cn/lz/seq/demo/consumer/Task.java)
+
+
+## 二、手动运行（不基于Docker）
 
 ### 环境依赖
 
-JDK17，MySQL5.7，Zookeeper3.9.2
+JDK 17，MySQL 8，Zookeeper 3.9.2
 
 ### 程序配置
 
@@ -129,13 +189,6 @@ dubbo:
     register-mode: instance
 ```
 
-#### ZooKeeper初始化信息
-
-| 路径            | 值                                    | 解释                             |
-|---------------|--------------------------------------|:-------------------------------|
-| /seq/token    | video=video_seq <br/>myshop=shop_seq | key为token，用于鉴权。value为表名，用于取值   |
-| /seq/strategy | random                               | 用于实时调整负载均衡策略，目前仅支持random，即随机路由 |
-
 #### curator配置
 
 用于从ZooKeeper中读取配置信息，例如负载均衡策略、token值。
@@ -149,24 +202,3 @@ elapsedTimeMs: 2000 # 重试间隔时间
 sessionTimeoutMs: 120000 # session超时时间
 connectionTimeoutMs: 15000 # 连接超时时间
 ```
-
-### 调用方式
-
-#### Http
-
-`ip:11111/seq?token=${token}`
-
-#### Dubbo
-
-```java
-@DubboReference
-private SeqService seqService;
-
-void call(){
-    String token="myshop";
-    long seq=seqService.seq(token);
-    log.info("seq no : {}",seq);
-}
-```
-
-详见调用示例 [consumer.Task.java](consumer/src/main/java/cn/lz/seq/demo/consumer/Task.java)

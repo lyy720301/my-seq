@@ -9,6 +9,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <packaging>jar</packaging>
+
+
     <artifactId>interface</artifactId>
 
     <properties>
@@ -23,5 +26,34 @@
             <scope>provided</scope> <!-- 指定为编译期依赖 -->
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-jar-plugin</artifactId>-->
+<!--                <version>3.2.2</version>-->
+<!--                <configuration>-->
+<!--                    <archive>-->
+<!--                        <manifest>-->
+<!--                            <addDefaultImplementationEntries>false</addDefaultImplementationEntries>-->
+<!--                            <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>-->
+<!--                        </manifest>-->
+<!--                        &lt;!&ndash; 显式禁用 Main-Class &ndash;&gt;-->
+<!--                        <manifestEntries>-->
+<!--                            <Main-Class/>-->
+<!--                        </manifestEntries>-->
+<!--                    </archive>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+        </plugins>
+    </build>
+
 
 </project>

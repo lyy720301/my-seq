@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  mysql-a:
+    image: mysql:8.0
+    platform: ${DOCKER_DEFAULT_PLATFORM}
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: seq
+    volumes:
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: 
+      - --auto_increment_offset=1
+      - --auto_increment_increment=2
+    networks:
+      - seq-network
+
+  mysql-b:
+    image: mysql:8.0
+    platform: ${DOCKER_DEFAULT_PLATFORM}
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: seq
+    volumes:
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: 
+      - --auto_increment_offset=2
+      - --auto_increment_increment=2
+    networks:
+      - seq-network
+
+  zookeeper:
+    image: zookeeper:3.9.2
+    platform: ${DOCKER_DEFAULT_PLATFORM}
+    volumes:
+      - ./docker/zk/init.sh:/init.sh
+#    等待3秒后初始化一些节点信息
+    command: ["/bin/bash", "-c",
+              "zkServer.sh start-foreground & sleep 3 && chmod +x /init.sh && /init.sh && wait"]
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zookeeper:2888:3888;2181
+    networks:
+      - seq-network
+
+  seq-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9999:9999"
+      - "11111:11111"
+    environment:
+      - SPRING_DATASOURCE_URL_1=jdbc:mysql://mysql-a:3306/seq?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL_2=jdbc:mysql://mysql-b:3306/seq?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=123456
+      - CURATOR_CONNECTSTRING=zookeeper:2181
+      - REST_DUBBO_API_PORT=11111
+      - SPRING_SERVER_PORT=9999
+    depends_on:
+      - mysql-a
+      - mysql-b
+      - zookeeper 
+    networks:
+      - seq-network
+
+networks:
+  seq-network:
+    driver: bridge

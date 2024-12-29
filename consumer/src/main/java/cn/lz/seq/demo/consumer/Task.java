@@ -45,7 +45,7 @@ public class Task implements CommandLineRunner {
                     HttpClient httpClient = HttpClient.newHttpClient();
                     // 创建HttpRequest
                     HttpRequest request = HttpRequest.newBuilder()
-                            .uri(new URI("http://localhost:11111/seq?token=myshop")) // 请求的URL
+                            .uri(new URI("http://localhost:11111/seq?token=video")) // 请求的URL
                             .GET() // HTTP GET 方法
                             .build();
                     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
