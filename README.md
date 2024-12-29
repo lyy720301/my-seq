@@ -44,11 +44,11 @@
 
 ## 各模块介绍
 
-- backend  
+- [backend](backend)  
   序列生成服务，该服务暴露了dubbo/http接口。
-- consumer  
-  演示服务，定时去请求backend，获取序列号。
-- interface  
+- [consumer](consumer)  
+  演示服务，定时去请求backend暴露的服务接口，获取序列号。
+- [interface](interface)  
   定义了服务接口，用于rpc发布与调用，同时该服务接口可通过http调用。
 
 ## 一、Docker 快速启动
@@ -62,7 +62,7 @@ docker compose up
 #### 1. Http
 
 `GET http://localhost:11111/seq?token=${token}`
-> token可填video或myshop，即：`http://localhost:11111/seq?token=video` 或 `http://localhost:11111/seq?token=myshop`
+> 预置了两个表，token可填video或myshop，即：`http://localhost:11111/seq?token=video` 或 `http://localhost:11111/seq?token=myshop`
 
 #### 2. Dubbo
 
@@ -91,7 +91,7 @@ void call(){
 > 获取序列请求入口
 > [SeqServiceImpl.java](backend/src/main/java/cn/lz/seq/service/SeqServiceImpl.java)
 
-##### 以上两种方式详细示例请见 [consumer.Task.java](consumer/src/main/java/cn/lz/seq/demo/consumer/Task.java)
+##### 以上两种调用方式详细示例请见 [consumer.Task.java](consumer/src/main/java/cn/lz/seq/demo/consumer/Task.java)
 
 
 ## 二、手动运行（不基于Docker）
