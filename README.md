@@ -62,7 +62,7 @@ docker compose up
 #### 1. Http
 
 `GET http://localhost:11111/seq?token=${token}`
-> 预置了两个表，token可填video或myshop，即：`http://localhost:11111/seq?token=video` 或 `http://localhost:11111/seq?token=myshop`
+> 预置了两个表，token可填video或myshop，即：[http://localhost:11111/seq?token=video](http://localhost:11111/seq?token=video) 或 [http://localhost:11111/seq?token=myshop](http://localhost:11111/seq?token=myshop)
 
 #### 2. Dubbo
 
